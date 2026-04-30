@@ -1,5 +1,6 @@
 from servicios import *
 from editar_servicio import *
+from Eliminar_servicios import *
 
 def menu_principal():
     while True:
