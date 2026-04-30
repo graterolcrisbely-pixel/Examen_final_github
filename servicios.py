@@ -70,5 +70,3 @@ def registrar_servicio_photocampus():
         print(f"\nServicio con ID {id_paquete} registrado exitosamente en PhotoCampus.")
     except Exception as e:
         print(f"Error al escribir en el archivo: {e}")
-
-registrar_servicio_photocampus()
