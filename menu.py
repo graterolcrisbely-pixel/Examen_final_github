@@ -14,15 +14,12 @@ def menu_principal():
         opcion = input("Seleccione una opcion: ").strip()
 
         if opcion == "1":
-            # Llama a la funcion de registro en servicios.py
             registrar_servicio_photocampus()
         
         elif opcion == "2":
-            # Llama a la funcion de edicion en servicios.py
             editar_servicio_photocampus()
             
         elif opcion == "3":
-            # Llama a la funcion de eliminacion en servicios.py
             eliminar_servicio_photocampus()
             
         elif opcion == "4":
