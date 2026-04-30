@@ -1,76 +1,74 @@
 import csv
 
-class GestionPhotoCampus:
-    def __init__(self, archivo_csv="servicios_photocampus.csv"):
-        self.archivo_csv = archivo_csv
-        self.preparar_archivo()
+def registrar_servicio_photocampus():
+    archivo = "servicios_photocampus.csv"
+    
+    try:
+        with open(archivo, mode='r', encoding='utf-8') as file:
+            pass
+    except FileNotFoundError:
+        with open(archivo, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(["ID Paquete", "Precio", "Tipo Evento", "Duracion"])
 
-    def preparar_archivo(self):
-        """Verifica si el archivo existe intentando abrirlo, si no, lo crea con encabezados."""
-        try:
-            with open(self.archivo_csv, mode='r', encoding='utf-8') as file:
-                pass
-        except FileNotFoundError:
-            with open(self.archivo_csv, mode='w', newline='', encoding='utf-8') as file:
-                writer = csv.writer(file)
-                writer.writerow(["Nombre Paquete", "Precio", "Tipo Evento", "Duracion"])
+    print("--- Sistema de Registro PhotoCampus ---")
 
-    def servicio_existe(self, nombre_paquete):
-        """Verifica si el paquete ya esta en el archivo CSV."""
+    while True:
         try:
-            with open(self.archivo_csv, mode='r', encoding='utf-8') as file:
+            id_input = input("Ingrese el ID numerico del paquete: ")
+            id_paquete = int(id_input)
+            
+            # Verificar duplicados en el archivo
+            duplicado = False
+            with open(archivo, mode='r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
                 for fila in reader:
-                    if fila["Nombre Paquete"].lower() == nombre_paquete.strip().lower():
-                        return True
-            return False
-        except FileNotFoundError:
-            return False
-
-    def solicitar_dato_numerico(self, mensaje, tipo):
-        """Solicita un valor numerico (float) y no sale hasta que sea valido."""
-        while True:
-            try:
-                valor = float(input(mensaje))
-                if valor <= 0:
-                    print("El valor debe ser mayor a cero.")
-                    continue
-                return valor
-            except ValueError:
-                print("Error: Entrada invalida. Por favor ingrese solo numeros.")
-
-    def solicitar_tipo_evento(self):
-        """Solicita el tipo de evento y valida que solo contenga letras."""
-        while True:
-            evento = input("Ingrese el tipo de evento (ej. Boda, Retrato): ").strip()
-            # Quitamos espacios para validar solo letras
-            if evento.replace(" ", "").isalpha():
-                return evento
+                    if fila["ID Paquete"] == str(id_paquete):
+                        duplicado = True
+                        break
+            
+            if duplicado:
+                print("Error: Este ID ya existe. Ingrese uno diferente.")
+            elif id_paquete <= 0:
+                print("Error: El ID debe ser un numero positivo.")
             else:
-                print("Error: El tipo de evento solo debe contener letras.")
+                break
+        except ValueError:
+            print("Error: El ID debe ser un numero entero.")
 
-    def registrar_servicio(self):
-        """Metodo principal para capturar datos y registrar el servicio."""
-        print("\n--- Registro de Nuevo Servicio PhotoCampus ---")
-        
-        nombre = input("Nombre del paquete fotografico: ").strip()
-        
-        if self.servicio_existe(nombre):
-            print(f"Error: El paquete '{nombre}' ya esta registrado.")
-            return
-
-        precio = self.solicitar_dato_numerico("Ingrese el precio: ", float)
-        tipo_evento = self.solicitar_tipo_evento()
-        duracion = self.solicitar_dato_numerico("Ingrese la duracion estimada (en horas): ", float)
-
+    while True:
         try:
-            with open(self.archivo_csv, mode='a', newline='', encoding='utf-8') as file:
-                writer = csv.writer(file)
-                writer.writerow([nombre, precio, tipo_evento, duracion])
-            print(f"Servicio '{nombre}' guardado exitosamente.")
-        except Exception as e:
-            print(f"No se pudo guardar el archivo: {e}")
+            precio = float(input("Ingrese el precio del servicio: "))
+            if precio <= 0:
+                print("Error: El precio debe ser mayor a cero.")
+            else:
+                break
+        except ValueError:
+            print("Error: Ingrese un valor numerico para el precio.")
 
-# --- Ejecucion del programa ---
-sistema = GestionPhotoCampus()
-sistema.registrar_servicio()
+    while True:
+        tipo_evento = input("Ingrese el tipo de evento (Boda, Retrato, etc.): ").strip()
+        if tipo_evento.replace(" ", "").isalpha() and tipo_evento != "":
+            break
+        else:
+            print("Error: El tipo de evento solo puede contener letras.")
+
+    while True:
+        try:
+            duracion = float(input("Ingrese la duracion estimada (horas): "))
+            if duracion <= 0:
+                print("Error: La duracion debe ser mayor a cero.")
+            else:
+                break
+        except ValueError:
+            print("Error: Ingrese un valor numerico para las horas.")
+
+    try:
+        with open(archivo, mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow([id_paquete, precio, tipo_evento, duracion])
+        print(f"\nServicio con ID {id_paquete} registrado exitosamente en PhotoCampus.")
+    except Exception as e:
+        print(f"Error al escribir en el archivo: {e}")
+
+registrar_servicio_photocampus()
